@@ -1,0 +1,15 @@
+
+ 1일차 - 1강.
+
+
+
+ # 프레임 워크 핵심 기술.
+
+핵심 기술 2가지.
+1. defendensy injection.
+2. transaction management.
+
+Spring이 성장한 이유.
+Java EE가 유료화되었고, Java EE의 역할의 핵심 기술 2가지를 모두 Spring으로 수행가능하다.
+
+
