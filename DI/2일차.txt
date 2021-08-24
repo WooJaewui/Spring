@@ -1,0 +1,63 @@
+
+  2일차 - 2 ~ 4강.
+
+
+
+ # 느슨한 결합력과 인터페이스.
+
+설명.
+인터페이스 타입의 변수를 선언해서 다형성을 통해 결합력을 낮춰서 코드 수정을 좀 더 쉽게 할 수 있다.
+
+결합력이 높은 방식.
+private B1 test = new B1( ) ;
+private B2 test = new B2( ) ;
+
+느슨한 결합 인터페이스 방식.
+private B test = new B1( ) ; 
+	test = new B2( );
+
+외부 문서로 클래스 만들기.
+FileInputStream fis = new FileInputStream( path ) ;
+Scanner sc = new Scanner( fis ) ;
+String className = sc.nextLine( );
+Class clazz = Class.forName( className ) ;
+Interface_test t = clazz.newInstance( ) ;
+
+
+
+ # DI Dependency Injection.
+
+DI 설명.
+부품 조립이라는 개념으로 생각하는 것이 쉽다. 
+Dependency는 Association has a 관계에서 외부에서 오는 인스턴스를 의미하고,
+injection은 매개변수 등으로 Dependency 인스턴스를 클래스 안으로 가져오는 것이다.
+
+용어 설명.
+Composition has a : 객체 안에 다른 인스턴스를 생성해서 가지고 있는 것.
+Association has a : 객체 안에 매개변수 등으로 외부에서 인스턴스를 받아서 사용하는 것.
+
+Injection 2가지.
+Setter Injection : 메소드를 사용하는 것.
+Construction Injection : 생성자를 사용하는 것.
+
+Spring DI.
+DI라는 부품 조립은 과정이 조금 복잡할 수 있는데, 이러한 복잡한 작업을 Spring에서 대신해준다.
+
+
+
+ # IoC Inversion of Control 컨테이너.
+
+IoC 컨테이너.
+부품을 조립해서 사용하는 DI 방식에서 부품을 조립하기 전에 저장하는 공간이다.
+Inversion은 부품을 조립하는 순서가 일반적인 일체형 프로세스와 역방향으로 진행되기 때문에 붙여졌다.
+
+
+
+
+
+
+
+
+
+
+
