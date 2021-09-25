@@ -1,0 +1,108 @@
+
+ 4일차 - 8 ~ 11강.
+
+
+
+ # 스프링 IoC 컨테이너 사용하기.
+
+ApplicationContext 인터페이스.
+
+ApplicationContext 종류.
+ClassPathXmlApplicationContext : 클래스 위치 있다.
+FileSystemXmlApplicationContext : 드라이브 내에 위치에 있다.
+XmlWebApplicationContext : 웹에 url 위치에 있다.
+AnnotationConfigApplicationContext : Annotation 위치에 있다.
+
+지시서 사용하기.
+프로젝트 Maven 설정. ( 프로젝트 우클릭 -> Configure -> Convert to Maven Project ) 
+SpringFramework 설정. ( maven repository 홈페이지 찾기 또는 pom.xml Global repository에서 찾기 )
+
+사용방법.
+ApplicationContext console = new ClassPathXmlApplicationContext( "패키지/파일이름.xml" ) ;
+( 클래스이름 ) console.getBean( "지시서에 작성한 클래스의 변수이름" ) : Object 리턴해서 형변환 필수.
+console.getBean( 클래스이름.class ) : 클래스 타입으로 리턴. ( 같은 클래스가 여러개 있을 때 구분 필요 )
+
+주의사항.
+console.getBean( "변수이름" )은 Object 타입으로 리턴해서 형변환이 필요하다.
+console.getBean( 클래스이름.class )는 클래스 타입으로 리턴하고, 지시서에 같은 클래스가 있는 경우 구분 필요.
+
+pom.xml 오류.
+pom.xml에 <plug-in> 오류가 발생하는 경우에 사용하는 방법.
+
+오류 해결방법.
+프로젝트 우클릭에 Run as에서 Maven install 실행.
+프로젝트 우클릭에 Maven에서 Update Project 실행.
+
+
+
+ # 값 형식 DI.
+
+지시서에 값을 설정하는 방식.
+<bean id="변수이름" class="패키지이름.클래스이름">
+	<property name="set메소드이름" value=값/>
+            <property name="set메소드이름">
+		<value>값</value>
+		<ref>참조변수</ref>
+	</property>
+</bean>
+
+
+
+ # 생성자 DI.
+
+생성자 사용.
+<bean id="변수이름" class="패키지이름.클래스이름">
+	<constructor-arg index="0" value="값" />	
+	<constructor-arg name="속성이름" value="값" />
+	<constructor-arg name="속성이름" type="클래스이름" value="값" />
+</bean>
+
+생성자 속성.
+index : 생성자 매개변수의 인덱스에 값을 입력..
+name : 생성자 매개변수의 값을 입력.
+type : 생성자 매개변수의 type에 값을 입력. 
+
+namespace 역할.
+1. 태그를 구분할 수 있게 해준다.
+2. 처리기를 설정해서 namespace로 정해진 처리기에서 태그를 처리해준다.
+
+namespace 사용하기.
+<beans xmlns:변수이름 ="http://www.springframework.org/schema/변수이름"  ~~~~ >
+	<bean id="변수이름" class="패키지이름.클래스이름" 변수이름:매개변수="값" />
+	<변수이름:bean ~~~ />
+</beans>
+
+
+
+ # 콜렉션 생성과 DI.
+
+xml으로 콜렉션을 생성하는 방법.
+1. <bean> 태그 속성 사용하기. ( 클래스 불러서 사용 )
+2. <bean> 생성자에 매개변수로 내가 원하는 객체를 넣어서 만들기. ( Collection에 객체 넣는 방법 )
+3. namespace를 통해 직접 콜렉션을 생성하기.
+
+<bean>태그 사용.
+xml : <bean id="변수이름" class="java.util.ArrayList" />
+java : List<객체> list = ( List<객체> )context.getBean( "변수이름" ) ;
+       List<객체> list = context.getBean( ArrayList.class ) ;
+
+<bean> 생성자 사용. ( xml만 적기 )
+<bean id="변수이름" class="java.util.ArrayList">
+	<constructor-arg>
+		<list>
+			<bean class="패키지이름.클래스이름">
+			<ref bean="변수이름">
+		</list>
+	<constructor-arg>
+</bean>
+
+namespace 콜렉션 생성. ( xml만 적기 )
+<beans xmlns:util="http://www.springframework.org/schema/util" ~~~~~~ >
+	<util:list id="변수이름" list-class="java.util.ArrayList">
+		<bean class="패키지이름.클래스이름">
+		<ref bean="exam" />
+	</util:list>
+</beans>
+
+
+
