@@ -1,0 +1,134 @@
+
+ 5일차 - 12 ~ 17강( DI 마무리 )
+
+
+
+ # 어노테이션을 이용할 때의 장점과 @Autowired를 이용한 DI.
+
+어노테이션 장점.
+지시서 없이 객체를 바꾸면 알아서 바뀐다.
+
+@Autowired.
+set메소드를 xml에 처리했던 부분을 삭제하고, set메소드에 @Autowired를 적으면 알아서 사용된다.
+
+
+
+ # @Autowired의 동작방식 이해와 @Qualifier 사용.
+
+IoC 컨테이너 이해.
+xml 지시서에 적혀있는 지시문장들을 읽어서 IoC컨테이너에 클래스를 생성한다.
+어노테이션을 사용하려면 <context:annotation-config/>을 통해 어노테이션을 사용한다는 표시를 xml에 작성.
+
+@Autowired 이해.
+@Autowired를 사용하면 IoC 컨테이너 안에 매개변수로 사용할 수 있는 클래스가 자동으로 들어간다.
+매개변수로 사용할 수 있는 클래스가 여러개이면 오류가 발생한다.
+
+@Autowired 오류 해결.
+xml에 <bean id="변수이름">에 변수이름을 매개변수의 이름과 똑같이 하면 여러 개중 id로 식별한다.
+또는 @Qualifier( "변수이름" )을 통해 특정 클래스를 지정해준다.
+
+<context:annotation-config/> 설명.
+지시서 xml에서 만들어진 클래스들 안에 annotation으로 설정한 멤버들이 존재한다는 것을 의미.
+
+
+
+ # @Autowired의 위치와 Required 옵션.
+
+@Autowired.
+지시서 xml에서 설정하여 IoC에 저장된 클래스를 @Autowired를 적용한 메소드에서 사용하는 것이다.
+
+@Autowired 위치.
+set메소드 앞에 사용 가능.
+매개변수가 있는 생성자에도 사용 가능. ( 오버로드 생성자 )
+Field( 변수 )에도 사용 가능. ( 기본생성자에서 변수를 초기화 하는 것과 같다고 생각 )
+
+Field에 사용.
+@Autowired
+@Qualifier( "exam" )
+private Exam exam;
+
+Field에 @Autowired 오류.
+기본생성자가 존재해야만 Field( 변수 )에 @Autowired가 적용된다.
+
+매개변수 생성자 사용.
+@Autowired
+public 클래스이름( @Qualifier( "exam" ) Exam exam ) { 
+	실행할 내용 ; 
+}
+
+매개변수 생성자 주의사항.
+생성자 앞에 @Qualifier를 사용할 수 없다. ( 매개변수가 여러개 있을 수 있기 때문에 ) 
+매개변수 앞에 @Qualifier를 사용해야된다.
+
+@Autowired( required = false )
+required = false : IoC에 조건이 맞는 클래스가 존재하지 않을 경우 메소드를 호출하지 않음.
+required = true : IoC에 조건이 맞는 클래스 존재하지 않을 경우 오류를 발생한다.
+
+정리.
+Field, 생성자, Set메소드 결국 모두 Field의 값을 정하는 것이므로 적절하게 사용하면 된다.
+
+
+
+ # 어노테이션을 이용한 객체생성.
+
+@Component.
+어노테이션을 통해 IoC Context에 클래스를 저장하는 방법이다.
+
+xml 설정하기.
+<context:component-scan base-package="적용할 클래스의 패키지이름" />
+
+<context:component-scan> 설명.
+@Component를 적용한 클래스를 base-packages에서 찾아서 IoC Context에 클래스를 생성해라.
+<context:component-scan>을 적용하면 <context:annotation-config/>를 설정하지 않아도 @Autowired를 읽는다.
+패키지를 설정할 때 "패키지이름, 패키지이름 " 과 같이 한번에 여러개의 패키지를 검색할 수 있다.
+
+@Component 사용.
+@Component( "변수이름" )
+public class 클래스이름 { 실행할내용 } 
+
+
+
+ # 특화된 @Component의 어노테이션.
+
+@Value.
+@Component를 적용한 클래스에 필드(변수)에 @Value( "값" )을 설정하면 초기화를 할 수 있다.
+
+@Component 종류.
+@Controller : MVC 모델 중에 Controller를 담당하는 클래스. 
+@Service : MVC 모델 중에 Service를 담당하는 클래스. ( Model 역할 )
+@Repository( DAO ) : 데이터에 접근하는 클래스. ( 데이터를 일시 저장하는 클래스 )
+
+
+
+ # XML Configuration을 Java Configuration으로 바꾸는 방법.
+
+설명.
+XML Configuration을 Java class로 만들어준다.
+
+Java Configuration 생성.
+@ComponentScan( { "패키지이름1" , "패키지이름2" } ) 
+@Configuration
+public class 클래스이름 { 
+	@Bean
+	public Exam exam( ) { 
+		return new NewlecExam( ) ;
+	}
+}
+
+Java Configuration 사용.
+ApplicationContext context = new AnnotationConfigApplicationContext( ConfigClass.class ) ;
+
+Java Configuration 다중 등록.
+context.register( ConfigClass1.class , ConfigClass2.class, ... ) ; 
+
+Configuration 클래스 생성 설명.
+@Bean을 사용하는 메소드는 <bean>으로 IoC Context에 생성될 클래스를 의미한다.
+클래스의 이름은 getBean( "아이디" )에 아이디로 사용될 변수이름을 의미한다. 
+
+클래스 생성방법 정리.
+1. Java Configuration에서 @Bean 메소드 리턴값으로 클래스 생성.
+2. Java Configuration에서 @ComponentScan( "패키지이름" ), 해당 class에 Component 설정.
+
+﻿
+
+
