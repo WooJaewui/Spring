@@ -1,0 +1,84 @@
+
+ 1일차 - 1 ~ 4강.
+
+
+
+ # 강의방향.
+
+Spring 강의 방향.
+1. Spring을 통한 방법.
+2. Spring boot를 통한 방법. 
+
+Spring.
+web.xml에 Spring Dispatcher 설정하면 Spring Configuration이 web.xml의 설정을 대신한다.
+servlet, service, security, Mybatis, Tiles 등의 설정 방법을 알아야된다.
+
+Spring Boot.
+Starter Configuration을 통해 Spring Configuration 설정을 쉽게 할 수 있게 도와준다.
+Starter Configuration으로 application.properties 또는 YAML을 사용한다.
+
+
+
+ # Spring MVC란.
+
+용어.
+POJO Plain Old Java Object : 평범한 자바 객체를 의미한다.
+
+Spring MVC.
+Controller의 역할을 하는 Servlet을 Java Controller로 만들어준다.
+Servlet을 하나로 만들고 웹 브라우저에서 요청이오면 Controller에게 요청을한다.
+Controller는 Servlet에게 요청을 받아서 로직을 실행 후에 응답을 Servlet에 보낸다.
+Servlet은 JSP로 응답을 보낸다.
+
+
+
+ # 실습환경 준비하기.
+
+Spring tools 다운로드.
+spring.io -> project -> Spring tools 4 -> window 다운로드.
+
+spring boot.
+spring boot은 tomcat을 내장하고있다. 
+
+spring tools 4 설치.
+jar파일을 zip파일로 변경 -> contents.zip파일 압축풀기 -> sts_버전.RELEASE 사용.
+
+
+
+ # 메이븐을 이용한 기본 웹 프로젝트 생성하기.
+
+프로젝트 생성.
+Create new Spring Stater Project : 스프링부트 프로젝트 만들기.
+
+Java EE 변경.
+spring tool 상단 Help -> Install New Software... -> work with 에 http://download.eclipse.org/releases/2020-12 입력
+-> 맨 마지막에 web,xml,java ee and OSGi Enterprise Develoment 설치
+
+Maven project 생성.
+Maven Project -> skip archetype 선택 -> group id, artifact id, war 선택.
+
+pom.xml JavaSE - 1.8 설정.
+Overview -> create -> name = maven.compiler.source, value = 1.8 설정.
+Overview -> create -> name = maven.compiler.target, value = 1.8 설정.
+설정 후 프로젝트 -> Maven -> Update Project. ( pom.xml 설정 후 매번 해줘야 된다 )
+
+pom.xml Tomcat 설정.
+<dependencies>
+	<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-api -->
+	<dependency>
+	    <groupId>org.apache.tomcat</groupId>
+	    <artifactId>tomcat-api</artifactId>
+	    <version>9.0.38</version>
+	</dependency>
+</dependencies>
+maven tomcat api 검색 후 버전 선택.
+
+web.xml 설정.
+project -> src -> main -> webapp -> WEB-INF폴더 안에 web.xml 생성하기.
+( 톰캣 설치 폴더에 webapp안에서 복사 붙여넣기 )
+
+톰캣 서버 설정.
+ctrl + f11 -> apach -> Tomcat Server9 -> 톰캣 폴더 선택.
+
+
+
