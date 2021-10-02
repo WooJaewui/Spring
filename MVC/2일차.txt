@@ -1,0 +1,156 @@
+
+ 2일차 - 5 ~ 14강.
+
+
+
+ # Dispatcher Servlet 라이브러리 설정하기.
+
+pom.xml Dependencies 추가하기.
+pom.xml -> Dependencies -> Add -> 원하는 dependencies 검색.
+
+Maven Repository 다운로드.
+원하는 dependency를 Maven Repository 홈페이지에서 다운로드해서 사용.
+( Spring MVC, Tomcat 다운로드 )
+
+
+
+ # dispatcher-servlet.xml 파일.
+
+DispatcherServlet 클래스.
+dispatcher-servlet.xml파일을 만들기 위한 클래스이다.
+
+web.xml에 DispatcherServlet 클래스 지정.
+<servlet>
+	<servlet-name>dispatcher</servlet-name>
+	<servlet-class>패키지이름.DispatcherServlet</servlet>
+</servlet>
+<url-mapping>
+	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/ * </url-pattern>
+</url-mapping>
+
+web.xml 설정.
+<url/pattern> / * 은 모든 url에서 dispatcher-servlet을 사용하겠다는 것을 의미한다. ( Front-Controller )
+
+dispatcher-servlet.xml 생성.
+WEB-INF 안에 생성한다. ( 위치를 따로 지정하지 않으면 꼭 이 안에 생성 )
+dispatcher는 web.xml에서 DispatcherServlet클래스를 지정한 변수이름이다.
+
+Ansi Console 렉 유발.
+Spring은 Eclipse와 다른 Console을 사용하는 것 같다.
+Ansi Console을 사용하지 않음으로 설정하면 렉 유발 이슈가 해결된다.
+
+
+
+ # IndexController 작성하기.
+
+dispatcher-servlet.xml 설명.
+spring에서 사용할 것들을 작성한다.
+
+dispatcher-servlet.xml 작성.
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="/index" class="webprj.IndexController">  
+    </bean>
+	
+</beans>
+
+dispatcher-servlet.xml 설명.
+bean id 속성에 url을 넣어서 해당 url 요청이 들어오면 클래스를 호출하도록 만든다.
+
+web.xml url mapping 설명.
+/ * : 모든 url의 요청이 들어왔을때 dispatcher-servlet.xml을 실행하게 만든다.
+/ : 모든 url의 요청이 들어왔을때 dispatcher-servlet.xml을 실행하는데, bean에 url이 없을 경우 그냥 url호출.
+
+Controller 클래스 설정.
+Controller 인터페이스 inplements.
+ModelAndView 메소드 오버라이드.
+ModelAndView mv = new ModelAndView( ) ;
+mv.addObject( "변수이름" , 값 ) ;
+mv.setViewName( "JSP파일이름" ) ;
+return mv ;
+
+Controller 클래스 설명.
+Controller에서 해당 클래스에 요청에 맞는 로직을 실행한다.
+ModelAndView클래스에 실행할 로직의 결과값을 Model로 저장하고, 그 값을 보낼 View( JSP 파일 )도 저장.
+return ModelAndView를 통해 JSP로 Model을 보낸다.
+
+
+
+ # View 페이지를 위한 위치.
+
+문제점.
+Controller -> View로 가는 실행이 이루어져야하는데, View만 따로 실행이 가능하다.
+
+문제 해결.
+WEB-INF안에 View를 저장한다.
+ModelAndView.setViewName( "/WEB-INF/view/뷰이름.jsp" ) 절대 경로로 위치를 저장해준다.
+
+context이름 변경.
+project -> 우클릭 -> properties -> web project settings -> Context root 설정.
+
+url 사용을 위한 더미 파일 작성.
+webapp안에 원하는 url과 똑같은 이름의 파일을 만들어준다. ( 확장자 X )
+dispatcher-servlet.xml와 web.xml가 제대로 동작하면 설정한 url이 우선적으로 실행되어 파일이 실행되지 않음.
+( url만 잠시 빌려 쓰는 용도 )
+
+
+
+ # ViewResolver 사용하기.
+
+View URL 생성자로 설정.
+ModelAndView mv = new ModelAndView( "뷰" ) ;
+
+설명.
+ModelAndView를 설정할때 "뷰" 부분의 중복되는 값을 미리 설정해 놓는 방식이다.
+
+dispatcher-servlet.xml 설정.
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="경로부분" />
+	<property name="suffix" value=".파일명" />
+</bean>
+
+
+
+ # 정적 파일 서비스하기.
+
+dispatcher-servlet.xml 설명.
+정적 파일( jpg,css,js )들을 사용할 수 없게 막아놨다.
+mvc라는 새로운 schema를 설정해준다.
+mvc:resources를 통해 static( 정적 파일 )들의 요청이 발생하면 설정한 폴더 안에서 찾아서 사용하도록 만듬.
+
+dispatcher-servlet.xml 설정.
+<beans ~~~~~~~~~
+	xmlns:mvc : "http://www.springframework.org/schema/mvc"
+	~~~~~~~~
+	xsi:schemaLocation=~~~
+	 		http://www.springframework.org/schema/mvc
+        			https://www.springframework.org/schema/mvc/spring-mvc.xsd"
+<mvc:resources location="/static을 찾을 폴더 경로/ " mapping="/**" />
+
+추가 설명.
+/static 파일은 static으로 많이 설정함으로 모든 static 파일들을 static 폴더로 몰아 넣는다.
+location /static/으로 설정시 url에서 location 부분은 제외된다.
+
+
+
+ # View 페이지 집중화의 필요성.
+
+설명.
+View.jsp에서 반복되는 코드들이 존재하는데( Header, Footer 등 ) 
+그 부분을 수정/보완을 쉽게 하기 위해 집중화가 필요하다.
+
+
+
+ # 페이지 공통분모 집중화.
+
+설명.
+Header, Footer 등을 집중화하기 위한 방법으로 js파일을 만들어서 <jsp:include ~~ >가 있다.
+이러한 방법도 조금은 번거로움이 있어서 한 번에 Header,Footer를 묶어서 사용할 수 있는 외부라이브러리를 사용.
+
+
+
