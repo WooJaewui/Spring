@@ -1,0 +1,224 @@
+
+ 4일차 - 22 ~ 34강.
+
+
+
+ # Service 객체 분리하기.
+
+설명.
+DI를 할때 Class가 여러개 존재해서 결합력을 낮춰야하는 경우 인터페이스를 생성해서 
+소스코드 변화없이 configuration만 바꿔서 객체를 쉽게 사용할 수 있다.
+
+
+
+ # Connection 정보 분리하기.
+
+dataSource 인터페이스.
+JDBC의 url, JDBC driver, username, password를 저장할 수 있도록 도와주는 인터페이스이다.
+oracle이나 Mysql 등 다른 DB로 데이터를 쉽게 변경할 수 있도록 도와준다.
+
+dispatcher-servlet.xml 설정.
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="oracle driver" />
+	<property name="url" value="oracle url" />
+	<property name="username" value="db아이디" />
+	<property name="password" value="db비밀번호" />
+</bean>
+
+라이브러리 추가.
+pom.xml -> Dependencies -> Add -> springframework 검색 -> org.springframework ( spring-jdbc )
+
+
+
+
+ # 스프링 설정파일 분리하기.
+
+설명.
+dispatcher-servlet.xml 하나에 너무 많은 정보가 들어있으면 가독성이 떨어진다.
+WEB-INF안에 폴더를 하나 생성해서 dispatcher-servlet.xml을 나눠서 변수이름.xml로 나누어준다.
+
+web.xml 설정.
+<listener>
+	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>
+		/경로/새로운 xml파일1.xml
+		/경로/새로운 xml파일2.xml
+	</param-value>
+</context-param>
+
+web.xml 디테일 설정.
+<load-on-startup>1</load-on-startup> : 우선순위를 1순위로 실행함.
+<async-supported>true</async-supported> : 비동기적으로 실행함.
+
+
+
+ # 객체 DI를 Annotation으로 변경하기.
+
+@Autowired.
+DI를 setMethod 또는 생성자 또는 변수에 사용한다는 뜻이다.
+web.xml에서 <context:annotation-config />를 해줘야함. ( context에 관한 내용을 annotation으로 사용했다는 의미 )
+
+service.context.xml 설정.
+xmlns:context = "/~~~~/~~/schema/context" ~~~~~~ >
+<context:annotation-config>
+
+
+
+ # Annotation으로 서비스 객체 생성하기.
+
+@Component.
+클래스를 DI로 사용할 수 있게 설정해준다.
+
+@Component 종류.
+@Service : Service 클래스에서 Component에 설정.
+@Controller : Controller 클래스에서 Component 설정.
+@Repository : Repository( DAO, Data 저장 클래스 ) 클래스에서 Component 설정.
+
+service.context.xml 설정.
+<context:component-scan base-package="@Component 클래스를 가진 패키지이름" />
+<context:annotation-config>를 삭제해도된다.
+
+
+
+ # Annotation으로 URL 매핑하기.
+
+component-scan 경로설정 주의사항.
+너무 넓은 패키지명을 사용하면 원하지 않는 클래스도 찾는 성능이 안 좋아지는 현상이 발생할 수 있다.
+
+servlet-service.xml 설정.
+<mvc:annotation-driven />
+어노테이션 @RequestMapping( url 매핑 )을 실행되도록 해준다.
+
+Controller 클래스 어노테이션 설정.
+@Controller
+public class 클래스이름 { 
+	@RequestMapping( "/url" )
+	public void 메소드이름( ) { 
+		url으로 요청이 들어오면 실행할 내용 ;
+	} 
+}
+
+@RequestMapping 추가 설명.
+url으로 요청이 들어오면 메소드를 실행하고, url.jsp 파일을 찾아서 자동으로 포워딩해준다.
+
+
+
+ # HomeController 만들기.
+
+설명.
+@Controller 클래스에서 @RequestMapping을 통해 url을 매핑하면 
+@RequestMapping 메소드 하나하나가 Controller 클래스처럼 url 요청에 반응하게 만들 수 있다.
+하나의 @Controller 클래스를 통해 모든 Controller를 제어할 수 있다.
+
+
+
+ # Notice 컨트롤러 정리하기.
+
+view와 url 구조.
+WEB-INF 안에 view폴더를 생성한다.
+view 폴더 안에 root( home 페이지 )를 나타내는 index.jsp를 만든다.
+패키지를 나타내는 폴더 하나를 만들고, 뷰들의 주제에 따라 묶어주는 폴더를 하나 만든다.
+폴더마다 각각의 뷰.jsp를 만들고 뷰 하나당 하나의 Controller와 연결한다.
+
+컨트롤러 정리하기.
+WEB-INF의 view폴더의 구조를 확인한다.
+뷰를 묶어주는 폴더를 클래스로 만들고, 뷰들을 @RequestMapping 메소드로 생성한다.
+
+url 추가 구성.
+메소드에서만 @RequestMapping을 사용할 수 있는 것이 아니라 class에서도 사용가능하다.
+메소드의 중복되는 부분을 클래스 단위에서 @RequestMapping을 해준다.
+
+
+
+ # 컨트롤러를 위한 Annotation 개념정리.
+
+과정.
+front-Controller( Servlet )을 통해 web browser의 요청에 대한 처리 Controller Servlet을 지정해준다.
+web.xml에 front-controller 설정.
+dispatcher-servlet.xml을 만들어서 controller를 설정해준다.
+controller를 @Controller와 @RequestMapping을 통해 url 매핑을 해준다.
+controller 로직 실행 후 view를 찾아가기 위해 Resolver로 향한다.
+Resolver를 통해 view url의 중복되는 prefix부분과 suffix부분을 설정해준다.
+view를 실행해서 web browser에 응답한다.
+
+
+
+ # 문서 출력방법 4가지.
+
+종류.
+서블릿 객체를 얻어서 문자열 출력하기.
+@ResponseBody 설정을 통한 문자열 출력하기.
+ResourceViewResolver를 이용한 문서 출력하기.
+TilesViewResolver를 이용한 문서 출력하기.
+
+서블릿 객체를 얻어서 문자열 출력.
+@RequestMapping( "/url" ) 
+public void abc( HttpServletResponse response ) { 
+	try { 
+		PrintWriter out = response.getWriter( ) ;
+		out.println( "출력할 내용" ) ;
+	} catch ( IOException e ) { 
+		e.printStackTrace( ) ;
+	}
+}
+
+서블릿 객체 추가 설명.
+웹 브라우저의 요청이 발생하면 front-controller Servlet파일에서 요청에 맞는 Controller를 찾아준다.
+@RequestMapping를 설정하면 설정한 메소드의 url을 통해서 Controller를 찾아준다.
+메소드에 매개변수를 설정하면 front-controller Servlet에 매개변수에 맞는 객체를 넣어서 요청을 보낸다.
+
+@ResponseBody 설정을 통한 문자열 출력.
+@RequestMapping( "/url" )
+@ResponseBody
+public String index( ) { 
+	return "Hello world" ;
+} 
+
+
+
+ # @RestController와 한글출력.
+
+@RestController 설명.
+class에 사용하여 일반 Controller와 다르게 메소드의 return을 직접 출력하도록 만든다.
+@RestController( "변수이름" )을 통해 bean에서 사용할 변수이름을 설정할 수 있다.
+
+servlet-context.xml 설명.
+<mvc:annotation-driven>을 통해 @RequestMapping을 통한 url 요청이 있으면 동작을 설정할 수 있다.
+한글을 읽을 수 있게 encoding 설정 등을 할 수 있다.
+
+servlet.context.xml 설정.
+<mvc:annotation-driven>
+	<mvc:message-converters>
+		<bean class="org.springframwork.http.converter.StringHttpMessageConverter">
+			<property name="supportedMediaTypes">		
+				<list>
+					<value>text/html; charset=UTF-8</value>
+				</list>
+			</property>
+		</bean>
+	</mvc:message-converters>
+</mvc:annotation-driven>
+
+
+
+ # JSON 출력하기.
+
+설명.
+<mvc:message-converters> 컨터터 설정으로 인해 
+Controller메소드에서 return Object하면 객체를 JSON으로 변환하여 읽어준다.
+pom.xml에 JSON을 읽을 수 있는 dependency도 추가해야된다.
+
+pom.xml 설정.
+<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+	<version>2.11.2</version>
+</dependency>
+
+
+
+
+
