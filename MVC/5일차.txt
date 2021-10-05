@@ -1,0 +1,122 @@
+
+ 5일차 - 35 ~ 41강.
+
+
+
+ # 중간 점검.
+
+Controller 출력 방법.
+String.
+JSON.
+ViewResolver.
+TilesRevolver.
+
+입력 값의 종류.
+QueryString : URL로 전달되는 문자열.
+POST : 사용자의 입력으로 전달되는 문자열.
+Path : 경로로 전달되는 문자열.
+Cookie : 브라우저에 보관하고 있던 문자열.
+Header : 요청 헤더로 전달되는 문자열.
+
+
+
+ # QueryString 입력.
+
+설명.
+queryString의 변수와 같은 이름과 String타입으로 Controller에 매개변수로 선언하면
+FrontController에서 알아서 값을 입력해준다.
+
+사용 방법1.
+@RequestMapping( "/url" )
+public void list( HttpServletRequest request ) { 
+	request.getParameter( "queryString" ) ;
+}
+
+사용 방법2.
+@RequestMapping( "/url" )
+public void list( String queryString ) { 
+	queryString을 사용한 로직 ;
+}
+
+
+
+ # QueryString 변수명과 기본값 처리.
+
+@RequestParam( "queryString" ).
+QueryString을 메소드의 매개변수로 이용할 때 내가 원하는 변수명으로 사용하는 방법이다.
+
+사용방법.
+@RequestMapping( "/url" )
+public void list( @RequestParam( name="queryString" defaultValue="10" ) String variableName ) {
+	로직 ;
+}
+
+추가설명.
+name 속성을 통해 파라미터 이름을 설정하여 변수의 값을 얻을 수 있다.
+defaultValue를 통해 queryString이 없을때 기본값을 설정할 수 있다.
+QueryString은 String으로만 올 수 있는데 int 변수이름을 통해 int 등 다른 타입으로 받을 수 있다.
+
+
+
+ # @RequestParam Optional 속성.
+
+required 속성.
+required = boolean 값을 설정하여 parameter의 존재여부에 대해 검사한다.
+true이면 queryString이 없을때 에러가 발생하고,
+false이면 queryString이 없을때 null값을 반환한다.
+
+value.
+name과 같은 역할을 한다. 
+
+
+
+ # POST 입력을 위한 Admin 컨트롤러 추가하기.
+
+입력 컨트롤러 생성. (복습)
+@Controller( "클래스의 bean name속성 이름 설정" )
+@RequestMapping( "/urlPath" )
+public class ControllerClassName {
+
+	@RequestMappinrg( "lastUrl" )
+	public void methodName( ) { 
+		로직 ;
+	}
+}
+
+
+
+ # POST 입력방법.
+
+url 주의사항.
+static 디렉토리로 설정한 url과 Resolver에서 설정한 prefix, suffix, 어노테이션으로 설정한 url 등
+다양한 url을 사용하기 때문에 url의 충돌이 일어나지 않도록 조심히 사용해야된다.
+
+
+
+ # POST 콤보박스 값 입력.
+
+사용.
+<select name="변수이름">
+	<option value="1">변수1</option>
+	<option value="2">변수2</option>
+</select>
+
+
+
+ # POST 체크박스, 라디오버튼 값 입력.
+
+체크박스 사용.
+<input type="checkbox" name="variables" value="1">값1
+<input type="checkbox" name="variables" value="1">값2
+public void Method( String[ ] variables ) { 
+	로직 ;
+}
+
+라디오버튼.
+<input type="checkbox" name="variables" value="1">값1
+<input type="checkbox" name="variables" value="1">값2
+public void Method( String variables ) { 
+	로직 ;
+}
+
+
