@@ -1,0 +1,163 @@
+
+ 1일차 - 1 ~ 12일차.
+
+
+
+ # 스프링 부트란?
+
+스프링부트.
+Web Application을 만드는데 Spring으로 개발을 할 때 사전설정이 너무 힘들어서 나왔다.
+WAS + Servlet/JSP + Spring을 설치하지 않고 쉽게 개발하도록 도와준다.
+dependencies들을 starter로 묶어놨다. ( 최소한의 configure만 설정하도록 도와줌 )
+
+정리.
+Create stand-alone : 다른것들을 설치하지 않아도 됨. ( tomcat 등 )
+starter dependencies : dependencies들을 묶어놓은 라이브러리 사용.
+Automatically configure : 자동 configure 설정.
+
+고민거리.
+spring을 직접 사용할지.
+spring boot에 spring을 얹어서 사용할지.
+
+
+
+ # Spring Boot 학습개요.
+
+학습진행.
+따라하기 방식으로 진행한다.
+
+먼저 공부해야 될 것들.
+JDBC, Java, MVC, Spring.
+
+
+
+ # Spring Tools 4 for Eclipse.
+
+개발환경 구축.
+spring.io -> Projects -> Spring Tools 4 -> Spring Tools 4 for Eclipse -> war 파일 압축풀기.
+
+
+
+ # Spring Boot Starter 프로젝트 만들기.
+
+프로젝트 만들기.
+New Spring Starter Project
+Type : Maven.
+Java Version : 8.
+Name과 Aritifact 이름을 맞추기.
+Version : 내 프로젝트 버전 설정. ( 원하는 대로 넣기 )
+Description : 프로젝트 설명.
+Package : 패키지이름 설정.
+next.
+web -> spring web 추가하기.
+finish.
+
+주의사항.
+패키지이름을 바꾸거나 잘못 설정하면 어노테이션, configure로 설정을 해줘야된다.
+
+Controller url 매핑하기.
+@RestController
+class {
+	@RequestMapping( "/url" )
+	public Spring 메소드이름( ) { 
+		return "출력될 내용"
+	}
+}
+
+
+
+ # HTML 파일 준비하기.
+
+루트 디렉토리.
+src/main.resources -> static.
+src -> main -> webapp생성.
+
+
+
+ # JSP View 추가하기.
+
+Jasper 라이브러리 추가하기.
+Maven Repositories -> Global Repositories -> Full Index Enable -> Rebuild
+pom.xml ->  Dependencies -> Add -> tomcat embed jasper 검색.
+
+
+
+ # MVC 구현하기.
+
+@Controller와 @RestController.
+@Controller : Controller로 사용하는 메소드의 리턴값을 view로 forward.
+@RestController : Controller로 사용하는 메소드의 리턴값을 리턴값 그대로 출력.
+
+Controller Method에서 Model 사용하기.
+메소드이름 ( Model model ) { 
+	model.addAttribute( "변수이름" , 값 ) ;
+}
+JSP 파일에서 { 변수이름 } 출력.
+
+
+
+ # Mapping, View 위치 바로잡기.
+
+@RequestMapping 공통 url 설정.
+@RequestMapping( "/공통 url" )를 클래스 앞에 사용한다.
+
+JSP 뷰 설정.
+뷰는 url로 요청할 수 없게 만든다. ( controller 포워딩을 통해서만 요청 )
+webapp -> WEB-INF 생성 -> jsp 및 설정 파일 넣기. ( url로 요청 X )
+정리하기 위해 WEB-INF 폴더 안에 view 폴더를 생성하기도 한다. ( 이건 취향 차이 )
+
+
+
+ # View Resolver 설정.
+
+application.properties.
+src/main/resources -> application.properties.
+기본 stater 이외에 다른 설정을 할 때 사용한다.
+
+POJO Plain Old Java Object.
+일반적인 순수 자바 클래스를 의미한다.
+
+DispatcherServlet.
+front-controller라고 불리며, 톰캣에서 요청을 받아서 POJO를 실행하여 데이터를 리턴받는다.
+POJO의 응답을 받아서 View로 연결해준다.
+
+ResourceViewResolver.
+디스패처가 POJO class의 리턴 값을 통해 어떤 값을 찾아갈 수 있도록 해준다.
+View url을 설정해 줄 수 있다.
+
+ResourceViewResolver 설정. ( application.properties에 적어야 될 사항 ) 
+spring.mvc.view.prefix = "중복되는 앞쪽 url"
+spring.mvc.view.suffix = "중복되는 뒤쪽 url"
+
+
+
+ # devtools 설정하기.
+
+설명.
+코드를 수정하고 저장하면 자동으로 서버를 재시작해주는 라이브러리.
+
+devtools 설정방법.
+pom.xml -> add -> spring-boot 검색 -> org.springframework.boot ( spring-boot-devtools )
+
+
+
+ # 관리 페이지를 위한 공지사항 페이지 추가해보기.
+
+Bean이름 오류.
+spring boot에서는 class의 이름을 자동으로 bean으로 사용한다.
+다른 패키지에 같은 이름의 클래스로 사용하면 bean의 id가 중복되기 때문에 오류가 발생한다.
+
+오류 해결 방법.
+@Controller( "빈이름" )
+
+Bean을 생성하는 어노테이션.
+@Service.
+@Controller.
+@Bean.
+@Repository.
+
+팁.
+이름이 같은 클래스 중에 패키지가 더 긴 클래스에 빈이름을 설정해주는 것이 좋다. ( 관례적 )
+
+
+
