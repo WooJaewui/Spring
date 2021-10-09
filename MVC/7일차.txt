@@ -1,0 +1,36 @@
+
+ 7일차 - 46~48강.
+
+
+
+ # POST 입력. ( 다중파일 업로드 )
+
+설명.
+input file이 여러개 있을 경우 매개변수 MultipartFile[ ] files로 받아서 for( MultipartFile file : files )로 실행.
+
+
+
+ # 공지사항 관리자 페이지 준비하기.
+
+tiles.xml
+입력된 url 경로를 변수로 사용하려면, 변수는 * 로 지정하고 순서대로 {1}, {2}로 사용하기.
+
+
+
+ # POST 매핑과 Redirection.
+
+request로 method 확인하기.
+if ( request.getMethod( ).equals( "POST 또는 GET" ) ) { 실행할 내용; }
+
+어노테이션으로 POST 매핑.
+@RequestMapping( value="urlMapping" , method=RequestMethod.GET 또는 POST ) - 옛날 방식.
+@GetMapping( "urlMapping" ) - 요즘 방식.
+@PostMapping( "urlMapping" ) - 요즘 방식.
+
+redirect 설정하기.
+return "redirect:url" ;
+
+forward 설정하기.
+return "포워드 될 url" ;
+
+
