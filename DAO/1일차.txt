@@ -1,0 +1,38 @@
+
+ 1일차 - 1 ~ 2강.
+
+
+
+ # Service와 Dao 레이어의 이해.
+
+이해.
+Service, DAO 모두 인터페이스로 구현한 후 IoC에서 필요한 클래스를 가져다가 사용한다.
+Service는 DAO의 메소드를 호출하여 데이터를 받는다.
+DAO는 JDBC를 연결하고 Service에서 호출한 메소드에 적혀 있는 Query문을 실행하여 데이터를 받는다.
+Controller는 Service에서 요청에 대한 응답에 관련된 메소드를 호출한다.
+
+레이어 관계도.
+하나의 Service에는 여러개의 Dao가 존재한다.
+Service를 사용하는 Controller는 여러개가 존재한다.
+Service 클래스도 목적에 따라 여러개 존재한다.
+
+
+
+ # JDBC 템플릿 라이브러리.
+
+JdbcTemplate 클래스.
+JDBC 연결을 도와주는 클래스이다.
+
+JdbcTemplate 메소드.
+template.setDataSource( dataSource ) : dataSource는 JDBC 연결 정보를 담고 있는 클래스이다. 
+List<데이터클래스> list = template.query( sql, BeanPropertyRowMapper( 데이터클래스.class ) ) ;
+
+사용.
+private DataSource dataSource ;
+JdbcTemplate template = new JdbcTemplate( ) ;
+template.setDataSource( dataSource ) ;
+List<데이터클래스> list = template.query( sql, new BeanPropertyRowMapper( 데이터클래스.class ) ) ;
+
+
+
+
