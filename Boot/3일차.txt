@@ -1,0 +1,169 @@
+
+ 3일차 - 25 ~ 38강.
+
+
+
+ # MyBatis Column 매핑.
+
+설명.
+DB에서 column이름과 Java entity 클래스의 변수이름이 다르면 select해서 읽어 올 수 없다.
+
+column 매핑 방법.
+@Result( property="entity 클래스 변수이름" , column="column이름" )
+
+2개 이상 column 매핑 방법.
+1. @Result를 여러개 사용한다. 
+2. @Results({ @Result ~~, @Result } )를 사용한다.
+
+
+
+ # Mapper에 param 포함하기.
+
+SQL문 팁.
+"select ~~~ " + "~~~"라고 처리할 때 줄바꿈을 할 경우 윗문장의 마지막 부분을 띄어쓰기 해야 된다.
+
+Mybatis param 설정.
+@Select( "쿼리문" )을 설정할 때 쿼리문 안에 #{변수이름}, ${변수이름} 으로 설정해주고,
+타입 method( 타입 변수이름 ) 을 통해 파라미터로 입력받아서 사용할 수 있다.
+
+Mybatis 변수종류.
+#{ 변수이름 } : String으로 쿼리문에 입력된다.
+${ 변수이름 } : column이름과 같이 변수이름, 예약어로 쿼리문에 입력된다.
+
+
+
+ # XML을 이용한 매핑.
+
+쿼리문 매핑 문제점.
+쿼리문이 복잡할 경우 코드 가독성이 떨어진다. ( 규모가 큰 프로젝트에 맞지 않음 )
+DAO 인터페이스가 결합성이 너무 높아진다. 
+
+XML 설정.
+매핑된 SQL 구문 살펴보기.
+
+<![ CDATA[ 부등호 ]]>
+xml에서 부등호를 사용하는 방식이다. 부등호부분에 <= , >= , > , < 등을 사용할 수 있다.
+
+XML 매핑 설정 과정.
+1. 원하는 위치에 xml 생성.
+2. xml 안에 Mybatis -> 시작하기 -> 매핑된 SQL 구문 살펴보기 복사 후 붙여넣기.
+3. mapper안에 원하는 sql문 설정. ( resultType="패키지이름.클래스이름" , paramerterTpye="파라미터 타입" )
+4. application.properties에서 생성한 xml 위치 찾아주기. ( mybatis.mapper-locations="classpath:패키지이름.파일이름" )
+
+
+
+ # XML Proposals 오류 문제.
+
+XML 관련 
+HELP -> Eclips Marketplace -> xml 검색 -> Eclipse XML Editors and Tools 버전 -> confirm.
+
+
+
+ # NoticeService 인터페이스 정의하기.
+
+인터페이스 기능.
+페이지 요청할 때.
+검색을 요청할 때.
+일괄 공개를 요청할 때.
+일괄 삭제를 요청할 때.
+자세한 페이지 요청할 때.
+수정 페이지를 요청할 때.
+
+
+
+ # NoticeDao 인터페이스 정의하기.
+
+NoticeDao 인터페이스 정의 과정.
+1. NoticeService 인터페이스를 구현하는 클래스에서 오버로드 메소드를 생성한다.
+2. 오버로드한 메소드에 DAO 인터페이스를 생성하여 값을 리턴한다.
+
+
+
+ # Mapper 구현하기.
+
+Mapping을 위한 xml작성.
+<select id="메소드이름" resultType="패키지이름.엔티티클래스이름">
+	실행할 query문.
+</select>
+
+부등호 사용하기.
+1. <![CDATA[>]]>
+2. &lt, &gt.
+
+oracle에서 limit 사용하기.
+select ~~~~ where rownum = 5 : 원하는 조건에서 순서대로 5개만 뽑아옴.
+
+Mapping xml 설정 속성.
+parameterType : 기본형 파라미터는 사용하지 않는다. select에서는 사용하지 않는다.
+resultType : select에서 사용한다.
+
+
+
+ # Dynamic SQL Mapper 구현하기.
+
+Mapping xml에서 반복문 사용하기.
+<foreach item="변수이름" collection="반복할 수 있는 입력변수">
+	#{변수이름]
+</foreach>
+
+foreach 속성.
+open : 맨처음 부분에 실행할 문장을 적을 수 있다. ( 딱 1번 실행 )
+close : 맨마지막 부분에 실행할 문장을 적을 수 있다. ( 딱 1번 실행 )
+sperator : 반복문을 구분해주는 구분자 역할을 한다. 
+
+MyBatis 특성.
+오버로드를 메소드를 xml에서 구현하지 못한다.
+
+
+
+ # Dynamic SQL. ( if, where, trim )
+
+if문의 <where>
+<where>
+	<if test="조건">
+		test가 true일 때 실행할 문장
+	</if>
+</where>
+
+if문의 <trim>
+<trim>
+	<if test="조건">
+		test가 true일 때 실행할 문장.
+	</if>
+</trim>
+
+where, trim 설명.
+where : where문을 사용할 때 where문의 문장이 조건에 따라 이상하게 작성될 때 사용한다.
+trim : where문을 사용할 때 문장을 망치는 부분을 prefix와 prefixOverrides로 설정해준다.
+
+
+
+ # Mapper 객체 단위 Test. ( jUnit5 )
+
+dependency 설정.
+mybatis spring boot test 검색 -> Maven dependency 복사 -> pom.xml 붙여넣기.
+
+jUnit 생성하기.
+DAO클래스 -> new -> jUnit Test case.
+
+Mapper.xml에서 column 매핑하기.
+<resultMap type="패키지이름.클래스이름" id="변수이름">
+	<result property="사용할변수" column="column이름" />
+</resultMap>
+
+jUnit 클래스 사용.
+@AutoConfigureTestDatabase( replace = Replace.NONE )
+@MybatisTest
+class 클래스이름 { 
+	@Autowired
+	테스트할 DAO 클래스.
+
+	@Test
+	void test( ) {
+		DAO 클래스를 사용해서 테스트할 로직 ;
+	}
+}
+
+
+
+
