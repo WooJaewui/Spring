@@ -1,0 +1,40 @@
+
+ 4일차 - 39 ~ 41강
+
+
+
+ # Dao 구현체 직접 구현하기. ( SQL SEssion )
+
+@Mapper의 단점.
+MyBatis의 결합이 너무 강하게 되어있다.
+직접 SqlSessionFactory라는 Mapper container에 DAO 구현 클래스를 담는 클래스를 직접 구현.
+
+SqlSession 인터페이스.
+sqlSession.getMapper( Dao인터페이스.class )를 통해 메소드를 매핑해줄 수 있다.
+
+jUnit 테스트.
+@SpringBootTest class에 적용.
+@Autowired 사용할 전역변수에 적용.
+
+활용하기.
+private Dao인터페이스 mapper.
+@Autowired
+public 생성자( SqlSession sqlSession ) {
+	mapper = sqlSession.getMapper( Dao인터페이스.class ) ;
+}
+@Override
+public 리턴타입 메소드이름( 매개변수 ) { 
+	return mapper.메소드이름( 매개변수 ) ;
+}
+
+
+
+ # Service 계층 구현하기.
+
+주의사항.
+한 번 잘못 구현하면 DAO부터 Service까지 모든걸 수행해야되기 때문에 처음부터 설계를 잘 해야된다.
+
+
+
+
+
