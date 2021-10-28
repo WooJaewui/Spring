@@ -1,0 +1,12 @@
+
+ request : 웹 브라우저에 url을 입력하는 것.
+ redirect : 현재 request를 response하고, redirect로 작성한 새로운 url로 request하는 것.
+ forward : 현재 url에서 url 변경없이 다른 페이지를 실행하는 것.
+
+ Controller 메소드는 request로만 실행 가능하다.
+ return "redirect: ~~ "는 다른 Controller 메소드를 실행하는 것이다.
+ return "url"은 view( jsp )로 forward하는 것이다.
+
+ view는 Controller 메소드에 forward로만 실행 가능하다.
+ view에서는 <form action>, <a href>를 통해 request( Controller 메소드의 실행 )를 유도할 수 있다.
+ 
